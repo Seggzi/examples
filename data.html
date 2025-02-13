@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Data</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Buy Data</h2>
+
+        <label for="network">Select Network:</label>
+        <select id="network">
+            <option value="mtn">MTN</option>
+            <option value="airtel">Airtel</option>
+            <option value="glo">Glo</option>
+            <option value="9mobile">9mobile</option>
+        </select>
+
+        <label for="plan">Select Data Plan:</label>
+        <select id="plan">
+            <option value="1GB">1GB - ₦300</option>
+            <option value="2GB">2GB - ₦600</option>
+            <option value="5GB">5GB - ₦1500</option>
+        </select>
+
+        <label for="phone">Enter Phone Number:</label>
+        <input type="text" id="phone" placeholder="08012345678">
+
+        <button onclick="purchaseData()">Buy Now</button>
+
+        <p id="statusMessage"></p>
+    </div>
+
+    <script>
+        async function purchaseData() {
+            const network = document.getElementById("network").value;
+            const plan = document.getElementById("plan").value;
+            const phone = document.getElementById("phone").value;
+
+            if (!phone.match(/^0[789][01]\d{8}$/)) {
+                alert("Invalid phone number!");
+                return;
+            }
+
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://localhost:5000/api/data/purchase", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ network, plan, phone })
+            });
+
+            const data = await response.json();
+            document.getElementById("statusMessage").innerText = data.message;
+        }
+    </script>
+</body>
+
+</html>
